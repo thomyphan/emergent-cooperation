@@ -18,7 +18,7 @@ All available domains are listed in the table below. The labels are used for the
 | Coin[2]       | `CoinGame-2`     | 2-player version of Coin                   					   |
 | Coin[4]       | `CoinGame-4`     | 4-player version of Coin                   					   |
 | Harvest[6]    | `Harvest-6`      | Harvest domain with 6 agents 				                       |
-| Harvest[6]    | `Harvest-6`      | Harvest domain with 6 agents 				                       |
+| Harvest[12]    | `Harvest-12`      | Harvest domain with 12 agents 				                       |
 
 ## 3. Implemented MARL algorithms
 
