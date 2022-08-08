@@ -83,4 +83,4 @@ To generate communication robustness plots for a particular domain `D` using met
 
 ## 7. References
 
-- [1] T. Phan et al., "Emergent Cooperation from Mutual Acknowledgment Exchange", in AAMAS 2022
+- [1] T. Phan et al., ["Emergent Cooperation from Mutual Acknowledgment Exchange"](https://ifaamas.org/Proceedings/aamas2022/pdfs/p1047.pdf), in AAMAS 2022
