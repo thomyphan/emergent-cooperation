@@ -65,7 +65,7 @@ class ActorCritic(Controller):
         return not self.sample_comm_failure()
     
     def local_probs(self, history, agent_id):
-        history = torch.tensor([history], dtype=torch.float32, device=self.device)
+        history = torch.tensor(numpy.array([history]), dtype=torch.float32, device=self.device)
         return self.actor_nets[agent_id](history).detach().numpy()[0]
 
     def preprocess(self):
@@ -107,10 +107,7 @@ class ActorCritic(Controller):
         values = self.get_values(agent_id, histories).squeeze().detach()
         action_probs = actor_net(histories)
         advantages = returns.detach() - values.detach()
-        policy_losses = []
-        for action, old_prob, probs, advantage in zip(actions, old_probs, action_probs, advantages):
-            policy_losses.append(self.policy_loss(advantage.item(), probs, action, old_prob))
-        actor_loss = torch.stack(policy_losses).sum()
+        actor_loss = self.policy_loss(advantages.detach(), action_probs, actions, old_probs).sum()
         actor_net.optimizer.zero_grad()
         actor_loss.backward()
         nn.utils.clip_grad_norm_(actor_net.parameters(), self.clip_norm)

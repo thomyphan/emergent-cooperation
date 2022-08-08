@@ -56,14 +56,14 @@ class ExperienceMemory:
             self.abs_incentive_cost += local_abs_incentive_cost
     
     def get_training_data(self):
-        return torch.tensor(self.histories, dtype=torch.float32, device=self.device),\
-            torch.tensor(self.next_histories, dtype=torch.float32, device=self.device),\
-            torch.tensor(self.actions, dtype=torch.long, device=self.device),\
-            torch.tensor(self.rewards, dtype=torch.float32, device=self.device),\
-            torch.tensor(self.returns, dtype=torch.float32, device=self.device),\
-            torch.tensor(self.old_probs, dtype=torch.float32, device=self.device),\
-            torch.tensor(self.dones, dtype=torch.float32, device=self.device),\
-            torch.tensor(self.reward_actions, dtype=torch.float32, device=self.device)
+        return torch.tensor(numpy.array(self.histories), dtype=torch.float32, device=self.device),\
+            torch.tensor(numpy.array(self.next_histories), dtype=torch.float32, device=self.device),\
+            torch.tensor(numpy.array(self.actions), dtype=torch.long, device=self.device),\
+            torch.tensor(numpy.array(self.rewards), dtype=torch.float32, device=self.device),\
+            torch.tensor(numpy.array(self.returns), dtype=torch.float32, device=self.device),\
+            torch.tensor(numpy.array(self.old_probs), dtype=torch.float32, device=self.device),\
+            torch.tensor(numpy.array(self.dones), dtype=torch.float32, device=self.device),\
+            torch.tensor(numpy.array(self.reward_actions), dtype=torch.float32, device=self.device)
 
     def get_extrinsic_returns(self):
         return torch.tensor(self.extrinsic_returns, dtype=torch.float32, device=self.device)

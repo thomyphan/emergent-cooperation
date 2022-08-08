@@ -39,8 +39,8 @@ class MATE(ActorCritic):
             self.last_rewards_observed[agent_id].append(reward)
             return reward >= last_reward
         if self.mate_mode == TD_ERROR_MODE:
-            history = torch.tensor([history], dtype=torch.float32, device=self.device)
-            next_history = torch.tensor([next_history], dtype=torch.float32, device=self.device)
+            history = torch.tensor(numpy.array([history]), dtype=torch.float32, device=self.device)
+            next_history = torch.tensor(numpy.array([next_history]), dtype=torch.float32, device=self.device)
             value = self.get_values(agent_id, history)[0].item()
             next_value = self.get_values(agent_id, next_history)[0].item()
             return reward + self.gamma*next_value - value >= 0
