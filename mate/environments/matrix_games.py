@@ -12,10 +12,12 @@ class MatrixGameEnvironment(Environment):
         self.nr_agents = 2
         self.payoff_matrices = params["payoff_matrices"]
         self.domain_value_function = params["domain_value_function"]
+        self.last_performed_action = None
         assert len(self.payoff_matrices) == self.nr_agents,\
             "2-player matrix games require 2 matrices, but got {}".format(len(self.payoff_matrices))
 
     def perform_step(self, joint_action):
+        self.last_performed_action = joint_action
         rewards, infos = super(MatrixGameEnvironment, self).perform_step(joint_action)
         assert not self.is_done(), "Episode terminated at time step {}. Please, reset before calling 'step'."\
             .format(self.time_step)
@@ -50,17 +52,15 @@ class MatrixGameEnvironment(Environment):
     def local_observation(self, agent_id):
         a1, a2 = self.last_joint_action
         obs = numpy.zeros(self.observation_dim)
-        start_state = self.observation_dim - 2
-        gifting_state = self.observation_dim - 1
-        if a1 < 0 or a2 < 0:
-            obs[start_state] = 1
-        if a1 >= 0 and a1 < self.nr_actions and a2 >= 0 and a2 < self.nr_actions:
-            obs[a1*self.nr_actions + a2] = 1
-        else:
-            obs[gifting_state] = 1
+        if self.last_performed_action is not None:
+            if agent_id == 0:
+                obs[a2] = 1
+            else:
+                obs[a1] = 1
         return obs
 
     def reset(self):
+        self.last_performed_action = None
         return super(MatrixGameEnvironment, self).reset()
 
 def make(params):
@@ -132,5 +132,5 @@ def make(params):
         params["domain_value_function"] = lambda x: tuple(x) in [(0,0), (1,0), (0,1)]
     assert "payoff_matrices" in params and "domain_value_function" in params,\
         "Unknown matrix game '{}'".format(domain_name)
-    params["observation_dim"] = int(params["nr_agents"]*params["nr_actions"])+2
+    params["observation_dim"] = int(params["nr_actions"])
     return MatrixGameEnvironment(params)
