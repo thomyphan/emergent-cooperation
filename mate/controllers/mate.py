@@ -25,6 +25,7 @@ class MATE(ActorCritic):
         super(MATE, self).__init__(params)
         self.last_rewards_observed = [[] for _ in range(self.nr_agents)]
         self.mate_mode = get_param_or_default(params, "mate_mode", STATIC_MODE)
+        self.token_value = get_param_or_default(params, "token_value", 1)
         self.trust_request_matrix = numpy.zeros((self.nr_agents, self.nr_agents), dtype=numpy.int)
         self.trust_response_matrix = numpy.zeros((self.nr_agents, self.nr_agents), dtype=numpy.int)
         self.defect_mode = get_param_or_default(params, "defect_mode", NO_DEFECT)
@@ -65,7 +66,7 @@ class MATE(ActorCritic):
                 neighborhood = info["neighbor_agents"][i]
                 for j in neighborhood:
                     assert i != j
-                    self.trust_request_matrix[j][i] += 1
+                    self.trust_request_matrix[j][i] += self.token_value
                     transition["request_messages_sent"] += 1
         # 2. Send trust responses
         for i, history, next_history in zip(range(self.nr_agents), joint_histories, next_joint_histories):
@@ -78,9 +79,9 @@ class MATE(ActorCritic):
                     transition["rewards"][i] += numpy.max(trust_requests)
             if respond_enabled and len(neighborhood) > 0:
                 if self.can_rely_on(i, transition["rewards"][i], history, next_history):
-                    accept_trust = 1
+                    accept_trust = self.token_value
                 else:
-                    accept_trust = -1
+                    accept_trust = -self.token_value
                 for j in neighborhood:
                     assert i != j
                     if self.trust_request_matrix[i][j] > 0:
