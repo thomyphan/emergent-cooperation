@@ -26,8 +26,8 @@ class MATE(ActorCritic):
         self.last_rewards_observed = [[] for _ in range(self.nr_agents)]
         self.mate_mode = get_param_or_default(params, "mate_mode", STATIC_MODE)
         self.token_value = get_param_or_default(params, "token_value", 1)
-        self.trust_request_matrix = numpy.zeros((self.nr_agents, self.nr_agents), dtype=numpy.int)
-        self.trust_response_matrix = numpy.zeros((self.nr_agents, self.nr_agents), dtype=numpy.int)
+        self.trust_request_matrix = numpy.zeros((self.nr_agents, self.nr_agents), dtype=numpy.float32)
+        self.trust_response_matrix = numpy.zeros((self.nr_agents, self.nr_agents), dtype=numpy.float32)
         self.defect_mode = get_param_or_default(params, "defect_mode", NO_DEFECT)
 
     def can_rely_on(self, agent_id, reward, history, next_history):
