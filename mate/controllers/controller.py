@@ -19,7 +19,7 @@ class Controller:
         self.gamma = params["gamma"]
         self.learning_rate = params["learning_rate"]
         self.history_length = params["history_length"]
-        self.device = torch.device("cpu")
+        self.device = get_param_or_default(params, "torch_device", torch.device("cpu"))
         self.observation_dim = params["observation_dim"]
         self.input_dim = int(self.observation_dim*self.history_length)
         self.eps = numpy.finfo(numpy.float32).eps.item()
@@ -56,7 +56,7 @@ class Controller:
 
     def load_model_weights_of(self, path, network_model, filename):
         path = join(path, filename)
-        network_model.load_state_dict(torch.load(path, map_location='cpu'))
+        network_model.load_state_dict(torch.load(path, map_location=self.device))
         network_model.eval()
     
     def policy(self, observations):

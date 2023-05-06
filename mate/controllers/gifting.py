@@ -21,7 +21,7 @@ class Gifting(ActorCritic):
         self.last_probs = numpy.ones((self.nr_agents, self.nr_actions))
 
     def local_probs(self, history, agent_id):
-        history = torch.tensor(numpy.array([history]), dtype=torch.float32, device=self.device)
+        history = torch.tensor(numpy.asarray([history]), dtype=torch.float32, device=self.device)
         probs = self.actor_nets[agent_id](history).detach().numpy()[0]
         if self.gifting_mode == BUDGET_MODE and self.gifting_budgets[agent_id] < self.gift_reward:
             probs[self.gifting_action] = 0

@@ -45,8 +45,9 @@ class LIO(ActorCritic):
         self.incentive_nets = []
         self.R_max = get_param_or_default(params, "R_max", 3)
         for i in range(self.nr_agents):
-            self.incentive_nets.append(IncentiveNet(i, self.input_dim, self.nr_agents,\
-                self.nr_actions, params["nr_hidden_units"], self.learning_rate))
+            incentive_net = IncentiveNet(i, self.input_dim, self.nr_agents,\
+                self.nr_actions, params["nr_hidden_units"], self.learning_rate)
+            self.incentive_nets.append(incentive_net.to(self.device))
         self.update_policy = True
 
     def update_step(self):

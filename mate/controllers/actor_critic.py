@@ -49,11 +49,14 @@ class ActorCritic(Controller):
     def __init__(self, params):
         super(ActorCritic, self).__init__(params)
         self.nr_update_iterations = 1
+        self.device = params["torch_device"]
         self.actor_nets = []
         self.critic_nets = []
         for _ in range(self.nr_agents):
-            self.actor_nets.append(ActorNet(self.input_dim, self.nr_actions, params["nr_hidden_units"], self.learning_rate))
-            self.critic_nets.append(CriticNet(self.input_dim, params["nr_hidden_units"], self.learning_rate))
+            actor_net = ActorNet(self.input_dim, self.nr_actions, params["nr_hidden_units"], self.learning_rate)
+            self.actor_nets.append(actor_net.to(self.device))
+            critic_net = CriticNet(self.input_dim, params["nr_hidden_units"], self.learning_rate)
+            self.critic_nets.append(critic_net.to(self.device))
 
     def sample_comm_failure(self):
         if self.current_epoch < self.failure_start_epoch:
@@ -66,7 +69,7 @@ class ActorCritic(Controller):
     
     def local_probs(self, history, agent_id):
         history = torch.tensor(numpy.array([history]), dtype=torch.float32, device=self.device)
-        return self.actor_nets[agent_id](history).detach().numpy()[0]
+        return self.actor_nets[agent_id](history).detach().cpu().numpy()[0]
 
     def preprocess(self):
         return None

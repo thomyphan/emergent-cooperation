@@ -1,6 +1,7 @@
 from os.path import join
 import mate.data as data
 import numpy
+import time
 
 def run_episode(env, controller, params, training_mode=True):
     done = False
@@ -68,10 +69,12 @@ def run_training(env, controller, params):
     response_messages_sent = []
     messages_sent = []
     for i in range(params["nr_epochs"]):
+        start = time.time()
         result = run_episodes(episodes_per_epoch, env, controller, params, training_mode=True)
-        print("Finished epoch {} ({}, {}, {} agents):".format(i, params["algorithm_name"], params["domain_name"], params["nr_agents"]))
-        print("- Discounted return:  ", result["discounted_returns"], "->", numpy.sum(result["discounted_returns"]))
-        print("- Undiscounted return:", result["undiscounted_returns"], "->", numpy.sum(result["undiscounted_returns"]))
+        end = time.time() - start
+        print(f"Finished epoch {i} ({params['algorithm_name']}, {params['domain_name']}, {params['nr_agents']} agents):")
+        print(f"- Discounted return:   {result['discounted_returns']} -> {numpy.sum(result['discounted_returns'])}")
+        print(f"- Undiscounted return: {result['undiscounted_returns']} -> {numpy.sum(result['undiscounted_returns'])}")
         mean_domain_values = result["domain_values"]
         assert len(mean_domain_values) == len(env.domain_values())
         a, b = env.domain_value_debugging_indices()
@@ -85,8 +88,9 @@ def run_training(env, controller, params):
         messages_sent.append(result["messages_sent"])
         sent = result["sent_gifts"]
         sent_gifts.append(sent)
-        print("- Domain value:", domain_value)
-        print("- Sent gifts:", sent)
+        print(f"- Domain value: {domain_value}")
+        print(f"- Sent gifts: {sent}")
+        print(f"- Time elapsed: {end} seconds")
         for return_list, new_return in zip(discounted_returns, result["discounted_returns"]):
             return_list.append(float(new_return))
         for return_list, new_return in zip(undiscounted_returns, result["undiscounted_returns"]):
